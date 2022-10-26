@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.beslimir.workmanagerpractice">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".DownloadApplication"
         android:allowBackup="true"
