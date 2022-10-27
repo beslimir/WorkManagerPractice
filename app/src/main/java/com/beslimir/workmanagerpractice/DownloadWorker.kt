@@ -1,6 +1,7 @@
 package com.beslimir.workmanagerpractice
 
 import android.content.Context
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import androidx.work.CoroutineWorker
@@ -18,8 +19,8 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 class DownloadWorker(
     private val context: Context,
-    private val workerParams: WorkerParameters
-): CoroutineWorker(
+    private val workerParams: WorkerParameters,
+) : CoroutineWorker(
     context,
     workerParams
 ) {
@@ -70,16 +71,21 @@ class DownloadWorker(
     }
 
     private suspend fun startForegroundService() {
-        setForeground(
-            ForegroundInfo(
-                Random.nextInt(),
-                NotificationCompat.Builder(context, "download_channel")
-                    .setSmallIcon(R.drawable.ic_launcher_background)
-                    .setContentText("Downloading...")
-                    .setContentTitle("Download in progress")
-                    .build()
+        try {
+            setForeground(
+                ForegroundInfo(
+                    Random.nextInt(),
+                    NotificationCompat.Builder(context, "download_channel")
+                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setContentText("Downloading...")
+                        .setContentTitle("Download in progress")
+                        .build()
+                )
             )
-        )
+        } catch (e: IllegalStateException) {
+            //These might occur when your app is not able to run in the foreground at this point
+            Log.d("WorkManager", "startForegroundService: ${e.message}")
+        }
     }
 
 }
